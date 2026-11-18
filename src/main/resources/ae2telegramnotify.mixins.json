@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.abi.ae2telegramnotify.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CraftingCpuLogicMixin",
+    "ExecutingCraftingJobAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
