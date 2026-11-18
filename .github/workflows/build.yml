@@ -1,10 +1,14 @@
-name: Build
+name: Build & Release
 
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -30,3 +34,13 @@ jobs:
         with:
           name: ae2telegramnotify-neoforge-1.21.1
           path: build/libs/*.jar
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/libs/*.jar
+          name: "${{ github.ref_name }} (Techopolis 3 / NeoForge 1.21.1)"
+          body: |
+            Мод **AE2 Telegram Notify** для **Techopolis 3** (Minecraft 1.21.1, NeoForge, AE2 19.2.17).
+            Положите `.jar` в папку `mods/` вашего сервера или клиента.
