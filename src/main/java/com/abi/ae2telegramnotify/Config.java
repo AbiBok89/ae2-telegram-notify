@@ -1,5 +1,6 @@
 package com.abi.ae2telegramnotify;
 
+import com.abi.ae2telegramnotify.telegram.TelegramClient;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class Config {
@@ -10,6 +11,11 @@ public final class Config {
     public static final ModConfigSpec.ConfigValue<String> DEFAULT_CHAT_ID;
     public static final ModConfigSpec.ConfigValue<String> API_BASE_URL;
     public static final ModConfigSpec.IntValue REQUEST_TIMEOUT_SECONDS;
+    public static final ModConfigSpec.ConfigValue<String> PROXY_TYPE;
+    public static final ModConfigSpec.ConfigValue<String> PROXY_HOST;
+    public static final ModConfigSpec.IntValue PROXY_PORT;
+    public static final ModConfigSpec.ConfigValue<String> PROXY_USERNAME;
+    public static final ModConfigSpec.ConfigValue<String> PROXY_PASSWORD;
 
     public static final ModConfigSpec.BooleanValue ONLY_WHEN_PLAYER_OFFLINE;
     public static final ModConfigSpec.BooleanValue IGNORE_FAKE_PLAYERS;
@@ -44,6 +50,26 @@ public final class Config {
         REQUEST_TIMEOUT_SECONDS = BUILDER
                 .comment("HTTP timeout in seconds for Telegram API requests.")
                 .defineInRange("requestTimeoutSeconds", 10, 2, 60);
+
+        PROXY_TYPE = BUILDER
+                .comment("Proxy type for Telegram API requests only: NONE, SOCKS5, or HTTP.")
+                .define("proxyType", "NONE");
+
+        PROXY_HOST = BUILDER
+                .comment("Proxy server hostname or IP (e.g. 127.0.0.1).")
+                .define("proxyHost", "");
+
+        PROXY_PORT = BUILDER
+                .comment("Proxy server port (e.g. 1080 for SOCKS5 or 8080 for HTTP).")
+                .defineInRange("proxyPort", 1080, 1, 65535);
+
+        PROXY_USERNAME = BUILDER
+                .comment("Optional proxy username (leave empty if no authentication is required).")
+                .define("proxyUsername", "");
+
+        PROXY_PASSWORD = BUILDER
+                .comment("Optional proxy password (leave empty if no authentication is required).")
+                .define("proxyPassword", "");
 
         BUILDER.pop();
 
@@ -84,6 +110,16 @@ public final class Config {
         BUILDER.pop();
 
         SPEC = BUILDER.build();
+    }
+
+    public static TelegramClient.ProxyConfig proxyConfig() {
+        return new TelegramClient.ProxyConfig(
+                TelegramClient.ProxyType.parse(PROXY_TYPE.get()),
+                PROXY_HOST.get(),
+                PROXY_PORT.get(),
+                PROXY_USERNAME.get(),
+                PROXY_PASSWORD.get()
+        );
     }
 
     private Config() {
